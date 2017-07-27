@@ -6,6 +6,7 @@ extern crate glutin;
 use std::io;
 
 /// Error type used in this library
+#[derive(Debug)]
 pub enum Error {
     IoError(io::Error),
     WindowCreationError(glutin::CreationError),
