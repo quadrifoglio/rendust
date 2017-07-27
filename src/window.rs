@@ -15,14 +15,18 @@ pub struct Window {
 impl Window {
     /// Create a new window with the specified title, width
     /// and height
-    pub fn new<S: Into<String>>(title: S, width: u32, height: u32) -> Result<Window> {
+    pub fn new<S: Into<String>>(title: S, width: u32, height: u32, vsync: bool) -> Result<Window> {
         // Prepare window creation
         let builder = glutin::WindowBuilder::new()
             .with_title(title)
             .with_dimensions(width, height);
 
+        // Create OpenGL context
+        let ctx = glutin::ContextBuilder::new()
+            .with_vsync(vsync);
+
+        // Create event loop & window
         let evt = glutin::EventsLoop::new();
-        let ctx = glutin::ContextBuilder::new();
         let win = match glutin::GlWindow::new(builder, ctx, &evt) {
             Ok(win) => win,
             Err(err) => return Err(Error::WindowCreationError(err))
