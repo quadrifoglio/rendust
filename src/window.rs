@@ -29,13 +29,13 @@ impl Window {
         let evt = glutin::EventsLoop::new();
         let win = match glutin::GlWindow::new(builder, ctx, &evt) {
             Ok(win) => win,
-            Err(err) => return Err(Error::WindowCreationError(err))
+            Err(err) => return Err(Error::WindowCreation(err))
         };
 
         unsafe {
             // Try to use the created OpenGL context
             if let Err(err) = win.make_current() {
-                return Err(Error::GlContextError(err))
+                return Err(Error::GlContext(err))
             }
 
             // Load OpenGL symbols
