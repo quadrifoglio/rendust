@@ -26,11 +26,15 @@ fn main() {
         }
     "#;
 
+    rendust::set_clear_color(Color::new(0.0, 0.0, 0.0, 1.0));
+
     let program = Program::new(vert, frag).unwrap();
     program.bind();
 
     while !window.should_exit {
         window.handle_events(|_| ());
+
+        rendust::clear();
         window.swap_buffers();
     }
 }
