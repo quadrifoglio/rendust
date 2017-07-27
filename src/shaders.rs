@@ -2,9 +2,12 @@ use gl;
 use gl::types::*;
 use super::{Result, Error};
 
+/// Represents an OpenGL shader program
 pub struct Program(GLuint);
 
 impl Program {
+    /// Create a new shader program based on a vertex shader
+    /// and a fragment shader
     pub fn new(vert_src: &str, frag_src: &str) -> Result<Program> {
         unsafe {
             // Create both shaders, return an error if it fails
@@ -71,6 +74,13 @@ impl Program {
             gl::DetachShader(program, frag);
 
             Ok(Program(program))
+        }
+    }
+
+    /// Bind the shader program in order to use it
+    pub fn bind(&self) {
+        unsafe {
+            gl::UseProgram(self.0);
         }
     }
 }

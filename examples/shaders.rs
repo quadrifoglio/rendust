@@ -27,6 +27,7 @@ fn main() {
     "#;
 
     let program = Program::new(vert, frag).unwrap();
+    program.bind();
 
     while !window.should_exit {
         window.handle_events(|_| ());
