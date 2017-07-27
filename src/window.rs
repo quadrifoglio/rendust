@@ -6,6 +6,7 @@ use super::{Result, Error};
 pub struct Window {
     pub width: u32,
     pub height: u32,
+    pub should_exit: bool,
 
     evt_loop: glutin::EventsLoop,
     gl_win: glutin::GlWindow
@@ -41,9 +42,32 @@ impl Window {
         Ok(Window {
             width: width,
             height: height,
+            should_exit: false,
 
             evt_loop: evt,
             gl_win: win
         })
+    }
+
+    /// Handle the events related to the window, using the specified
+    /// closure as a callback that will be invoked for each event
+    pub fn handle_events<F: FnMut(glutin::WindowEvent)>(&mut self, mut callback: F) {
+        let mut should_exit = false;
+
+        self.evt_loop.poll_events(|evt| match evt {
+            glutin::Event::WindowEvent{ event, .. } => match event {
+                glutin::WindowEvent::Closed => should_exit = true,
+                _ => callback(event)
+            },
+            _ => ()
+        });
+
+        self.should_exit = should_exit;
+    }
+
+    /// Swap the two rendering buffers, present the renderer
+    /// frame to the screen
+    pub fn swap_buffers(&self) {
+        self.gl_win.swap_buffers().unwrap();
     }
 }
