@@ -66,3 +66,6 @@ pub mod shaders;
 
 // Mesh rendering
 pub mod mesh;
+
+// Math functionality
+pub mod math;

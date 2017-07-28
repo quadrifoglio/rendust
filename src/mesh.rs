@@ -117,6 +117,7 @@ impl Texture {
 /// that can be rendered to the screen
 pub enum PrimitiveType {
     Points,
+    Lines,
     Triangles
 }
 
@@ -206,6 +207,7 @@ impl Mesh {
             // Render
             match self.primitive {
                 PrimitiveType::Points => gl::DrawArrays(gl::POINTS, 0, self.vertex_count),
+                PrimitiveType::Lines => gl::DrawArrays(gl::LINES, 0, self.vertex_count),
                 PrimitiveType::Triangles => gl::DrawArrays(gl::TRIANGLES, 0, self.vertex_count),
             }
 
