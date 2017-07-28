@@ -4,17 +4,21 @@ use std::os::raw::c_void;
 use gl;
 use gl::types::*;
 
+use super::Color;
+
 /// Represents a 3D vertex
 #[repr(C)]
 pub struct Vertex {
-    pub position: [GLfloat; 3]
+    pub position: [GLfloat; 3],
+    pub color: Color
 }
 
 impl Vertex {
     /// Create a new vertex
-    pub fn new(pos: [GLfloat; 3]) -> Vertex {
+    pub fn new(pos: [GLfloat; 3], c: Color) -> Vertex {
         Vertex {
-            position: pos
+            position: pos,
+            color: c
         }
     }
 }
@@ -59,6 +63,7 @@ impl Mesh {
 
             // Enable the atttributes
             gl::EnableVertexAttribArray(0);
+            gl::EnableVertexAttribArray(1);
 
             // Specify where each different attirbute of each vertex
             // are in GPU memory
@@ -74,11 +79,23 @@ impl Mesh {
                 0 as *const c_void
             );
 
+            // Color attribute
+            // Offsert in vertex memory structure: 3 floats, 12 bytes
+            gl::VertexAttribPointer(
+                1 as GLuint,
+                4 as GLint,
+                gl::FLOAT,
+                gl::FALSE,
+                std::mem::size_of::<Vertex>() as GLsizei,
+                (std::mem::size_of::<f32>() * 3) as *const c_void
+            );
+
             // Render
             gl::DrawArrays(gl::TRIANGLES, 0, 3);
 
             // Disable the attributes
             gl::DisableVertexAttribArray(0);
+            gl::DisableVertexAttribArray(1);
 
             // Unbind VBO
             gl::BindBuffer(gl::ARRAY_BUFFER, 0);

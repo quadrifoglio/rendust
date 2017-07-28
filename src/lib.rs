@@ -21,21 +21,16 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 /// Represents a color
 /// RGBA, 4 32 bits floating point values
+#[repr(C)]
 pub struct Color {
-    pub r: f32,
-    pub g: f32,
-    pub b: f32,
-    pub a: f32,
+    rgba: [f32; 4]
 }
 
 impl Color {
     /// Create a new color
     pub fn new(r: f32, g: f32, b: f32, a: f32) -> Color {
         Color {
-            r: r,
-            g: g,
-            b: b,
-            a: a
+            rgba: [r, g, b, a]
         }
     }
 }
@@ -43,7 +38,7 @@ impl Color {
 /// Set the clearing color
 pub fn set_clear_color(c: Color) {
     unsafe {
-        gl::ClearColor(c.r, c.g, c.b, c.a);
+        gl::ClearColor(c.rgba[0], c.rgba[1], c.rgba[2], c.rgba[3]);
     }
 }
 
