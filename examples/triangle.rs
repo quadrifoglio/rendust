@@ -5,35 +5,12 @@ use rendust::window::Window;
 use rendust::shaders::Program;
 use rendust::mesh::{Vertex, PrimitiveType, Mesh};
 
+// TODO: FIX: Basic fragment shader expect a texture, so this result in a black screen
+
 fn main() {
     let mut window = Window::new("Rendust example - Triangle", 1280, 720, true).unwrap();
 
-    let vert = r#"
-        #version 140
-
-        in vec3 position;
-        in vec4 color;
-
-        out vec4 frag_color;
-
-        void main() {
-            gl_Position = vec4(position, 1.0);
-            frag_color = color;
-        }
-    "#;
-
-    let frag = r#"
-        #version 140
-
-        in vec4 frag_color;
-        out vec4 out_color;
-
-        void main() {
-            out_color = frag_color;
-        }
-    "#;
-
-    let program = Program::new(vert, frag).unwrap();
+    let program = Program::basic().unwrap();
 
     let triangle = Mesh::new(PrimitiveType::Triangles, &[
         Vertex::new([-1.0, -1.0, 0.0], Color::new(1.0, 0.0, 0.0, 1.0)),

@@ -132,7 +132,7 @@ impl Program {
             out vec4 out_color;
 
             void main() {
-                out_color = texture2D(tex, frag_texcoords);
+                out_color = texture2D(tex, frag_texcoords) * frag_color;
             }
         "#;
 
