@@ -2,6 +2,7 @@
 extern crate gl;
 extern crate libc;
 extern crate glutin;
+extern crate cgmath;
 
 use std::io;
 

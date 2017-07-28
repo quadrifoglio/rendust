@@ -1,10 +1,16 @@
-use std::ffi::CStr;
+use std::ffi::{CStr, CString};
+
 use gl;
 use gl::types::*;
+
+use cgmath::{Matrix4, SquareMatrix};
+
 use super::{Result, Error};
 
 /// Represents an OpenGL shader program
-pub struct Program(GLuint);
+pub struct Program {
+    id: GLuint
+}
 
 impl Program {
     /// Create a new shader program based on a vertex shader
@@ -74,14 +80,84 @@ impl Program {
             gl::DetachShader(program, vert);
             gl::DetachShader(program, frag);
 
-            Ok(Program(program))
+            // Bind the program
+            gl::UseProgram(program);
+
+            // Create Program object
+            let program = Program{ id: program };
+
+            // Set the initial values for the uniform matrices
+            let matrix = Matrix4::<f32>::identity();
+            program.set_uniform_matrix("projection", matrix.as_ref());
+            program.set_uniform_matrix("view", matrix.as_ref());
+            program.set_uniform_matrix("model", matrix.as_ref());
+
+            // Return
+            Ok(program)
+        }
+    }
+
+    /// Create a basic shader program
+    pub fn basic() -> Result<Program> {
+        let vert = r#"
+            #version 140
+
+            uniform mat4 projection;
+            uniform mat4 view;
+            uniform mat4 model;
+
+            in vec3 position;
+            in vec4 color;
+            in vec2 texcoords;
+
+            out vec4 frag_color;
+            out vec2 frag_texcoords;
+
+            void main() {
+                gl_Position = projection * view * model * vec4(position, 1.0);
+
+                frag_color = color;
+                frag_texcoords = texcoords;
+            }
+        "#;
+
+        let frag = r#"
+            #version 140
+
+            uniform sampler2D tex;
+
+            in vec4 frag_color;
+            in vec2 frag_texcoords;
+
+            out vec4 out_color;
+
+            void main() {
+                out_color = texture2D(tex, frag_texcoords);
+            }
+        "#;
+
+        Program::new(vert, frag)
+    }
+
+    /// Set the value of the uniform matrix defined by the specified
+    /// name.
+    pub fn set_uniform_matrix(&self, name: &str, matrix: &[f32; 16]) {
+        unsafe {
+            // Get the location of the uniform
+            let loc = gl::GetUniformLocation(self.id, CString::new(name).unwrap().as_ptr());
+
+            // If the uniform exists
+            if loc >= 0 {
+                // Set the uniform's value
+                gl::UniformMatrix4fv(loc, 1, gl::FALSE, matrix.as_ptr() as *const GLfloat);
+            }
         }
     }
 
     /// Bind the shader program in order to use it
     pub fn bind(&self) {
         unsafe {
-            gl::UseProgram(self.0);
+            gl::UseProgram(self.id);
         }
     }
 }
