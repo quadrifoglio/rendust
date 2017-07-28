@@ -1,3 +1,4 @@
+use std::ffi::CStr;
 use gl;
 use gl::types::*;
 use super::{Result, Error};
@@ -20,14 +21,14 @@ impl Program {
             gl::ShaderSource(
                 vert,
                 1 as GLsizei,
-                &[vert_src.as_ptr() as *const GLchar] as *const *const GLchar,
+                &CStr::from_ptr(vert_src.as_ptr() as *const i8).as_ptr(),
                 &(vert_src.len() as GLint)
             );
 
             gl::ShaderSource(
-                vert,
+                frag,
                 1 as GLsizei,
-                &[frag_src.as_ptr() as *const GLchar] as *const *const GLchar,
+                &CStr::from_ptr(frag_src.as_ptr() as *const i8).as_ptr(),
                 &(frag_src.len() as GLint)
             );
 
@@ -36,7 +37,7 @@ impl Program {
             gl::CompileShader(frag);
 
             // Check for compilation errors in the vertex shader
-            let mut compiled: GLint = 0;
+            let mut compiled: GLint = 42;
             gl::GetShaderiv(vert, gl::COMPILE_STATUS, &mut compiled as *mut GLint);
 
             if compiled <= 0 {
