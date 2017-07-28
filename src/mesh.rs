@@ -23,6 +23,60 @@ impl Vertex {
     }
 }
 
+/// Represents a texture
+/// A 2D image loaded onto the graphics card's memory
+pub struct Texture {
+    pub width: u32,
+    pub height: u32,
+
+    id: GLuint
+}
+
+impl Texture {
+    /// Create a new texture with the specified with and height.
+    /// The image data must be 8 bit RGBA
+    pub fn new(width: u32, height: u32, data: &[u8]) -> Texture {
+        unsafe {
+            // Create and bind the texture
+            let mut id: GLuint = 0;
+
+            gl::GenTextures(1, (&mut id) as *mut GLuint);
+            gl::BindTexture(gl::TEXTURE_2D, id);
+
+            // Usual texture parameters
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::REPEAT);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::REPEAT);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR);
+
+            // Upload the texture data to the GPU
+            gl::TexImage2D(
+                gl::TEXTURE_2D,
+                0,
+                gl::RGBA as GLint,
+                width as GLsizei,
+                height as GLsizei,
+                0,
+                gl::RGBA,
+                gl::UNSIGNED_BYTE,
+                data.as_ptr() as *const c_void
+            );
+
+            // Generate mipmap
+            gl::GenerateMipmap(gl::TEXTURE_2D);
+
+            // Unbind the texture
+            gl::BindTexture(gl::TEXTURE_2D, 0);
+
+            Texture {
+                width: width,
+                height: height,
+                id: id
+            }
+        }
+    }
+}
+
 /// Represents all the drawable primitives
 /// that can be rendered to the screen
 pub enum PrimitiveType {
