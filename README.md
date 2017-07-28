@@ -1,4 +1,4 @@
-# Rendus
+# Rendust
 
 Very basic OpenGL-based 3D rendering library.
 
