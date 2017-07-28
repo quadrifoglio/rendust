@@ -118,7 +118,8 @@ impl Texture {
 pub enum PrimitiveType {
     Points,
     Lines,
-    Triangles
+    Triangles,
+    Quads
 }
 
 /// Represents a renderable 3D object
@@ -209,6 +210,7 @@ impl Mesh {
                 PrimitiveType::Points => gl::DrawArrays(gl::POINTS, 0, self.vertex_count),
                 PrimitiveType::Lines => gl::DrawArrays(gl::LINES, 0, self.vertex_count),
                 PrimitiveType::Triangles => gl::DrawArrays(gl::TRIANGLES, 0, self.vertex_count),
+                PrimitiveType::Quads => gl::DrawArrays(gl::QUADS, 0, self.vertex_count),
             }
 
             // Disable the attributes
