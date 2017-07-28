@@ -10,15 +10,26 @@ use super::Color;
 #[repr(C)]
 pub struct Vertex {
     pub position: [GLfloat; 3],
-    pub color: Color
+    pub color: Color,
+    pub texcoords: [GLfloat; 2]
 }
 
 impl Vertex {
-    /// Create a new vertex
+    /// Create a new colored vertex
     pub fn new(pos: [GLfloat; 3], c: Color) -> Vertex {
         Vertex {
             position: pos,
-            color: c
+            color: c,
+            texcoords: [0.0, 0.0]
+        }
+    }
+
+    /// Create a new textured vertex
+    pub fn textured(pos: [GLfloat; 3], tex: [GLfloat; 2]) -> Vertex {
+        Vertex {
+            position: pos,
+            color: Color::new(1.0, 1.0, 1.0, 1.0),
+            texcoords: tex
         }
     }
 }
@@ -44,10 +55,10 @@ impl Texture {
             gl::BindTexture(gl::TEXTURE_2D, id);
 
             // Usual texture parameters
-            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::REPEAT);
-            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::REPEAT);
-            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR);
-            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::REPEAT as i32);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::REPEAT as i32);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR as i32);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32);
 
             // Upload the texture data to the GPU
             gl::TexImage2D(
@@ -73,6 +84,14 @@ impl Texture {
                 height: height,
                 id: id
             }
+        }
+    }
+
+    /// Bind the texture for use in
+    /// rendering
+    pub fn bind(&self) {
+        unsafe {
+            gl::BindTexture(gl::TEXTURE_2D, self.id);
         }
     }
 }
@@ -129,6 +148,7 @@ impl Mesh {
             // Enable the atttributes
             gl::EnableVertexAttribArray(0);
             gl::EnableVertexAttribArray(1);
+            gl::EnableVertexAttribArray(2);
 
             // Specify where each different attirbute of each vertex
             // are in GPU memory
@@ -155,6 +175,17 @@ impl Mesh {
                 (std::mem::size_of::<f32>() * 3) as *const c_void
             );
 
+            // Texture coordinates attribute
+            // Offsert in vertex memory structure: 3 floats + 4 floats, 28 bytes
+            gl::VertexAttribPointer(
+                2 as GLuint,
+                2 as GLint,
+                gl::FLOAT,
+                gl::FALSE,
+                std::mem::size_of::<Vertex>() as GLsizei,
+                (std::mem::size_of::<f32>() * (3 + 4)) as *const c_void
+            );
+
             // Render
             match self.primitive {
                 PrimitiveType::Points => gl::DrawArrays(gl::POINTS, 0, self.vertex_count),
@@ -164,6 +195,7 @@ impl Mesh {
             // Disable the attributes
             gl::DisableVertexAttribArray(0);
             gl::DisableVertexAttribArray(1);
+            gl::DisableVertexAttribArray(2);
 
             // Unbind VBO
             gl::BindBuffer(gl::ARRAY_BUFFER, 0);
