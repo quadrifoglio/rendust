@@ -23,14 +23,23 @@ impl Vertex {
     }
 }
 
+/// Represents all the drawable primitives
+/// that can be rendered to the screen
+pub enum PrimitiveType {
+    Points,
+    Triangles
+}
+
 /// Represents a renderable 3D object
 pub struct Mesh {
+    primitive: PrimitiveType,
+    vertex_count: i32,
     vbo: GLuint
 }
 
 impl Mesh {
     /// Create a new mesh
-    pub fn new(vertices: &[Vertex], indicies: Option<&[u32]>) -> Mesh {
+    pub fn new(p: PrimitiveType, vertices: &[Vertex], indicies: Option<&[u32]>) -> Mesh {
         unsafe {
             // Create a VBO to store vertex data
             let mut vbo: GLuint = 0;
@@ -50,7 +59,9 @@ impl Mesh {
             gl::BindBuffer(gl::ARRAY_BUFFER, 0);
 
             Mesh{
-                vbo: vbo
+                primitive: p,
+                vbo: vbo,
+                vertex_count: vertices.len() as i32
             }
         }
     }
@@ -91,7 +102,10 @@ impl Mesh {
             );
 
             // Render
-            gl::DrawArrays(gl::TRIANGLES, 0, 3);
+            match self.primitive {
+                PrimitiveType::Points => gl::DrawArrays(gl::POINTS, 0, self.vertex_count),
+                PrimitiveType::Triangles => gl::DrawArrays(gl::TRIANGLES, 0, self.vertex_count),
+            }
 
             // Disable the attributes
             gl::DisableVertexAttribArray(0);

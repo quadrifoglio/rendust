@@ -3,7 +3,7 @@ extern crate rendust;
 use rendust::Color;
 use rendust::window::Window;
 use rendust::shaders::Program;
-use rendust::mesh::{Vertex, Mesh};
+use rendust::mesh::{Vertex, PrimitiveType, Mesh};
 
 fn main() {
     let mut window = Window::new("Rendust example - Triangle", 1280, 720, true).unwrap();
@@ -35,7 +35,7 @@ fn main() {
 
     let program = Program::new(vert, frag).unwrap();
 
-    let triangle = Mesh::new(&[
+    let triangle = Mesh::new(PrimitiveType::Triangles, &[
         Vertex::new([-1.0, -1.0, 0.0], Color::new(1.0, 0.0, 0.0, 1.0)),
         Vertex::new([ 0.0,  1.0, 0.0], Color::new(0.0, 1.0, 0.0, 1.0)),
         Vertex::new([ 1.0, -1.0, 0.0], Color::new(0.0, 0.0, 1.0, 1.0)),
