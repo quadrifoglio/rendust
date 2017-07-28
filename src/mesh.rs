@@ -6,6 +6,11 @@ use gl::types::*;
 
 use super::Color;
 
+// Define a globally available default blank texture
+lazy_static! {
+    pub static ref BlankTexture: Texture = Texture::blank();
+}
+
 /// Represents a 3D vertex
 #[repr(C)]
 pub struct Vertex {
@@ -87,12 +92,24 @@ impl Texture {
         }
     }
 
+    /// Create a white texture to be used when
+    /// no other texture is loaded
+    pub fn blank() -> Texture {
+        Texture::new(1, 1, &[255, 255, 255, 255])
+    }
+
     /// Bind the texture for use in
     /// rendering
     pub fn bind(&self) {
         unsafe {
             gl::BindTexture(gl::TEXTURE_2D, self.id);
         }
+    }
+
+    /// Unbind the texture
+    /// This actually binds a default blank texture
+    pub fn unbind(&self) {
+        BlankTexture.bind();
     }
 }
 

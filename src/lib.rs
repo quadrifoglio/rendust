@@ -1,4 +1,7 @@
 // External libraries
+#[macro_use]
+extern crate lazy_static;
+
 extern crate gl;
 extern crate libc;
 extern crate glutin;
@@ -49,6 +52,10 @@ pub fn clear() {
     unsafe {
         gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
     }
+
+    // Bind a default blank texture, in case no other
+    // texture is being use
+    mesh::BlankTexture.bind();
 }
 
 // Windowing subsystem

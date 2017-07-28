@@ -8,6 +8,7 @@ gl = "*"
 libc = "*"
 glutin = "0.9.2"
 cgmath = "0.14.1"
+lazy_static = "0.2"
 
 [dev-dependencies]
 imagefmt = "4.0.0"

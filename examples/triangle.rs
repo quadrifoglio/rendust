@@ -5,8 +5,6 @@ use rendust::window::Window;
 use rendust::shaders::Program;
 use rendust::mesh::{Vertex, PrimitiveType, Mesh};
 
-// TODO: FIX: Basic fragment shader expect a texture, so this result in a black screen
-
 fn main() {
     let mut window = Window::new("Rendust example - Triangle", 1280, 720, true).unwrap();
 
