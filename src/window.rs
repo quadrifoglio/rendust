@@ -19,10 +19,13 @@ impl Window {
         // Prepare window creation
         let builder = glutin::WindowBuilder::new()
             .with_title(title)
-            .with_dimensions(width, height);
+            .with_dimensions(width, height)
+            .with_min_dimensions(width, height)
+            .with_max_dimensions(width, height);
 
         // Create OpenGL context
         let ctx = glutin::ContextBuilder::new()
+            .with_gl_profile(glutin::GlProfile::Compatibility)
             .with_vsync(vsync);
 
         // Create event loop & window

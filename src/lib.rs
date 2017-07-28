@@ -17,12 +17,6 @@ pub enum Error {
 /// Result type used in this library
 pub type Result<T> = std::result::Result<T, Error>;
 
-// Windowing subsystem
-pub mod window;
-
-// Shader program management
-pub mod shaders;
-
 // Root scope types and functions
 
 /// Represents a color
@@ -60,3 +54,12 @@ pub fn clear() {
         gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
     }
 }
+
+// Windowing subsystem
+pub mod window;
+
+// Shader program management
+pub mod shaders;
+
+// Mesh rendering
+pub mod mesh;
