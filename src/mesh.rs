@@ -30,6 +30,7 @@ impl Mesh {
         unsafe {
             // Create a VBO to store vertex data
             let mut vbo: GLuint = 0;
+
             gl::GenBuffers(1, (&mut vbo) as *mut GLuint);
             gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
 
@@ -40,6 +41,9 @@ impl Mesh {
                 vertices.as_ptr() as *const c_void,
                 gl::STATIC_DRAW
             );
+
+            // Unbind VBO
+            gl::BindBuffer(gl::ARRAY_BUFFER, 0);
 
             Mesh{
                 vbo: vbo
@@ -53,11 +57,11 @@ impl Mesh {
             // Bind the VBO
             gl::BindBuffer(gl::ARRAY_BUFFER, self.vbo);
 
+            // Enable the atttributes
+            gl::EnableVertexAttribArray(0);
+
             // Specify where each different attirbute of each vertex
             // are in GPU memory
-
-            // Enable the position attribute
-            gl::EnableVertexAttribArray(0);
 
             // Position attribute
             // Offsert in vertex memory structure: 0
@@ -72,6 +76,12 @@ impl Mesh {
 
             // Render
             gl::DrawArrays(gl::TRIANGLES, 0, 3);
+
+            // Disable the attributes
+            gl::DisableVertexAttribArray(0);
+
+            // Unbind VBO
+            gl::BindBuffer(gl::ARRAY_BUFFER, 0);
         }
     }
 }
