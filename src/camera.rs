@@ -10,11 +10,11 @@ pub struct Camera {
 }
 
 impl Camera {
-    /// Create a new camera. It will spawn at (0, 0, 0) and
+    /// Create a new camera. By default it will
     /// look towards the negative z
-    pub fn new() -> Camera {
+    pub fn new(p: Vec3) -> Camera {
         Camera {
-            position: Vec3::new(0.0, 0.0, 0.0),
+            position: p,
             target: Vec3::new(0.0, 0.0, -1.0),
             up: Vec3::new(0.0, 1.0, 0.0)
         }
