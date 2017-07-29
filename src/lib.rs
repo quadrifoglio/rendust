@@ -59,3 +59,7 @@ pub mod camera;
 
 // Lighting
 pub mod lighting;
+
+// Context
+pub mod context;
+pub use context::Context;

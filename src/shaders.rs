@@ -3,8 +3,6 @@ use std::ffi::{CStr, CString};
 use gl;
 use gl::types::*;
 
-use cgmath::{Matrix4, SquareMatrix};
-
 use super::{Result, Error};
 
 /// Represents an OpenGL shader program
@@ -80,73 +78,11 @@ impl Program {
             gl::DetachShader(program, vert);
             gl::DetachShader(program, frag);
 
-            // Bind the program
-            gl::UseProgram(program);
-
-            // Create Program object
-            let program = Program{ id: program };
-
-            // Set the initial values for the uniform matrices
-            let matrix = Matrix4::<f32>::identity();
-            program.set_uniform_matrix("projection", matrix.as_ref());
-            program.set_uniform_matrix("view", matrix.as_ref());
-            program.set_uniform_matrix("model", matrix.as_ref());
-
             // Return
-            Ok(program)
+            Ok(Program {
+                id: program
+            })
         }
-    }
-
-    /// Create a basic shader program
-    pub fn basic() -> Result<Program> {
-        let vert = r#"
-            #version 140
-
-            uniform mat4 projection;
-            uniform mat4 view;
-            uniform mat4 model;
-
-            in vec3 position;
-            in vec4 color;
-            in vec2 texcoords;
-
-            out vec4 frag_color;
-            out vec2 frag_texcoords;
-
-            void main() {
-                gl_Position = projection * view * model * vec4(position, 1.0);
-
-                frag_color = color;
-                frag_texcoords = texcoords;
-            }
-        "#;
-
-        let frag = r#"
-            #version 140
-
-            uniform sampler2D tex;
-
-            uniform vec4 ambient_light_color;
-            uniform float ambient_light_strength;
-
-            in vec4 frag_color;
-            in vec2 frag_texcoords;
-
-            out vec4 out_color;
-
-            void main() {
-                vec4 obj_color = texture2D(tex, frag_texcoords) * frag_color;
-
-                if(ambient_light_strength > 0) {
-                    out_color = ambient_light_strength * ambient_light_color * obj_color;
-                }
-                else {
-                    out_color = obj_color;
-                }
-            }
-        "#;
-
-        Program::new(vert, frag)
     }
 
     /// Set the value of the uniform matrix defined by the specified

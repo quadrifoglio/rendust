@@ -21,8 +21,13 @@ pub use cgmath::Rad;
 
 pub use cgmath::SquareMatrix;
 
+/// Create a new identity matrix
+pub fn mat4_identity() -> Mat4 {
+    Mat4::identity()
+}
+
 /// Crate a perspective projection matrix
 /// FoV angle needs to be specified in degrees
-pub fn perspective(fovy: f32, aspect: f32, near: f32, far: f32) -> Mat4 {
+pub fn mat4_perspective(fovy: f32, aspect: f32, near: f32, far: f32) -> Mat4 {
     cgmath::perspective(cgmath::Deg(fovy), aspect, near, far)
 }

@@ -1,8 +1,8 @@
 extern crate rendust;
 
+use rendust::Context;
 use rendust::math::{self, Vec3};
 use rendust::window::Window;
-use rendust::shaders::Program;
 use rendust::mesh::{Vertex, PrimitiveType, Mesh};
 use rendust::camera::Camera;
 use rendust::lighting::Ambient;
@@ -10,10 +10,9 @@ use rendust::lighting::Ambient;
 fn main() {
     let mut window = Window::new("Rendust example - Scene", 1280, 720, true).unwrap();
 
-    let program = Program::basic().unwrap();
-
-    let projection = math::perspective(90.0, 1280.0 / 720.0, 0.1, 1000.0);
-    program.set_uniform_matrix("projection", projection.as_ref());
+    let ctx = Context::new().unwrap();
+    ctx.set_projection(math::mat4_perspective(90.0, 1280.0 / 720.0, 0.1, 1000.0));
+    ctx.set_ambient_light(Ambient::new([0.1, 0.1, 0.1, 1.0], 0.5));
 
     let camera = Camera::new(Vec3::new(1.0, 1.0, 3.0));
 
@@ -45,17 +44,13 @@ fn main() {
         1, 5, 6, 2
     ]));
 
-    let ambient_light = Ambient::new([0.1, 0.1, 0.1, 1.0], 0.5);
-    ambient_light.apply(&program);
-
     while !window.should_exit {
         window.handle_events(|_| ());
 
         rendust::set_clear_color(0.0, 0.0, 0.0, 1.0);
         rendust::clear();
 
-        program.bind();
-        program.set_uniform_matrix("view", camera.view_matrix().as_ref());
+        ctx.set_view(camera.view_matrix());
 
         floor.render();
         cube.render();
