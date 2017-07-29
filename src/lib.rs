@@ -23,15 +23,6 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 // Root scope types and functions
 
-/// 2D vector
-pub type Vec2 = cgmath::Vector2<f32>;
-
-/// 3D vector
-pub type Vec3 = cgmath::Vector3<f32>;
-
-/// 4x4 square matrix
-pub type Mat4 = cgmath::Matrix4<f32>;
-
 /// Represents a color
 /// RGBA, 4 32 bits floating point values
 pub type Color = [f32; 4];
