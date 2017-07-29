@@ -126,17 +126,33 @@ impl Program {
 
             uniform sampler2D tex;
 
+            uniform vec4 ambient_light_color;
+            uniform float ambient_light_strength;
+
             in vec4 frag_color;
             in vec2 frag_texcoords;
 
             out vec4 out_color;
 
             void main() {
-                out_color = texture2D(tex, frag_texcoords) * frag_color;
+                vec4 obj_color = texture2D(tex, frag_texcoords) * frag_color;
+
+                if(ambient_light_strength > 0) {
+                    out_color = ambient_light_strength * ambient_light_color * obj_color;
+                }
+                else {
+                    out_color = obj_color;
+                }
             }
         "#;
 
         Program::new(vert, frag)
+    }
+
+    /// Set a basic ambient lighting for the shader program
+    pub fn set_ambient_lighting(&self, color: [f32; 4], strength: f32) {
+        self.set_uniform_vector("ambient_light_color", 4, &color);
+        self.set_uniform_float("ambient_light_strength", strength);
     }
 
     /// Set the value of the uniform matrix defined by the specified
@@ -150,6 +166,41 @@ impl Program {
             if loc >= 0 {
                 // Set the uniform's value
                 gl::UniformMatrix4fv(loc, 1, gl::FALSE, matrix.as_ptr() as *const GLfloat);
+            }
+        }
+    }
+
+    /// Set the value of the uniform float defined by the specified
+    /// name
+    pub fn set_uniform_float(&self, name: &str, float: f32) {
+        unsafe {
+            // Get the location of the uniform
+            let loc = gl::GetUniformLocation(self.id, CString::new(name).unwrap().as_ptr());
+
+            // If the uniform exists
+            if loc >= 0 {
+                // Set the uniform's value
+                gl::Uniform1f(loc, float);
+            }
+        }
+    }
+
+    /// Set the value of the uniform vector defined by the specified
+    /// name.
+    pub fn set_uniform_vector(&self, name: &str, num: u32, vals: &[f32]) {
+        unsafe {
+            // Get the location of the uniform
+            let loc = gl::GetUniformLocation(self.id, CString::new(name).unwrap().as_ptr());
+
+            // If the uniform exists
+            if loc >= 0 {
+                // Set the uniform's value
+                match num {
+                    2 => gl::Uniform2f(loc, vals[0], vals[1]),
+                    3 => gl::Uniform3f(loc, vals[0], vals[1], vals[2]),
+                    4 => gl::Uniform4f(loc, vals[0], vals[1], vals[2], vals[3]),
+                    _ => ()
+                }
             }
         }
     }

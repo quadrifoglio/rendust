@@ -10,6 +10,7 @@ fn main() {
     let mut window = Window::new("Rendust example - Scene", 1280, 720, true).unwrap();
 
     let program = Program::basic().unwrap();
+    program.set_ambient_lighting([0.2, 0.2, 0.2, 1.0], 0.5);
 
     let projection = math::perspective(90.0, 1280.0 / 720.0, 0.1, 1000.0);
     program.set_uniform_matrix("projection", projection.as_ref());
