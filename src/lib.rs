@@ -23,14 +23,10 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 // Root scope types and functions
 
-/// Represents a color
-/// RGBA, 4 32 bits floating point values
-pub type Color = [f32; 4];
-
 /// Set the clearing color
-pub fn set_clear_color(c: Color) {
+pub fn set_clear_color(r: f32, g: f32, b: f32, a: f32) {
     unsafe {
-        gl::ClearColor(c[0], c[1], c[2], c[3]);
+        gl::ClearColor(r, g, b, a);
     }
 }
 

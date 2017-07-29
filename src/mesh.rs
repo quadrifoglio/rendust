@@ -4,8 +4,6 @@ use std::os::raw::c_void;
 use gl;
 use gl::types::*;
 
-use super::Color;
-
 // Define a globally available default blank texture
 lazy_static! {
     pub static ref BlankTexture: Texture = Texture::blank();

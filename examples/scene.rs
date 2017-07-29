@@ -3,7 +3,7 @@ extern crate rendust;
 use rendust::math;
 use rendust::window::Window;
 use rendust::shaders::Program;
-use rendust::mesh::{Vertex, Texture, PrimitiveType, Mesh};
+use rendust::mesh::{Vertex, PrimitiveType, Mesh};
 use rendust::camera::Camera;
 
 fn main() {
@@ -50,7 +50,7 @@ fn main() {
     while !window.should_exit {
         window.handle_events(|_| ());
 
-        rendust::set_clear_color([0.0, 0.0, 0.0, 1.0]);
+        rendust::set_clear_color(0.0, 0.0, 0.0, 1.0);
         rendust::clear();
 
         program.bind();

@@ -18,7 +18,7 @@ fn main() {
     while !window.should_exit {
         window.handle_events(|_| ());
 
-        rendust::set_clear_color([0.0, 0.0, 0.0, 1.0]);
+        rendust::set_clear_color(0.0, 0.0, 0.0, 1.0);
         rendust::clear();
 
         program.bind();
