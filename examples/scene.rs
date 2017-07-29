@@ -1,7 +1,6 @@
 extern crate rendust;
 
 use rendust::math;
-use rendust::Color;
 use rendust::window::Window;
 use rendust::shaders::Program;
 use rendust::mesh::{Vertex, PrimitiveType, Mesh};
@@ -16,13 +15,13 @@ fn main() {
 
     let mut grid_vertices = Vec::new();
     for x in -50..50 {
-        grid_vertices.push(Vertex::new([x as f32, -3.0, -50.0], Color::new(0.0, 0.0, 1.0, 1.0)));
-        grid_vertices.push(Vertex::new([x as f32, -3.0, 50.0], Color::new(0.0, 0.0, 1.0, 1.0)));
+        grid_vertices.push(Vertex::new([x as f32, -3.0, -50.0], [0.0, 0.0, 1.0, 1.0]));
+        grid_vertices.push(Vertex::new([x as f32, -3.0, 50.0], [0.0, 0.0, 1.0, 1.0]));
     }
 
     for z in -50..50 {
-        grid_vertices.push(Vertex::new([-50.0, -3.0, z as f32], Color::new(1.0, 0.0, 0.0, 1.0)));
-        grid_vertices.push(Vertex::new([50.0, -3.0, z as f32], Color::new(1.0, 0.0, 0.0, 1.0)));
+        grid_vertices.push(Vertex::new([-50.0, -3.0, z as f32], [0.0, 0.0, 1.0, 1.0]));
+        grid_vertices.push(Vertex::new([50.0, -3.0, z as f32], [0.0, 0.0, 1.0, 1.0]));
     }
 
     let grid = Mesh::new(PrimitiveType::Lines, grid_vertices.as_ref(), None);
@@ -30,7 +29,7 @@ fn main() {
     while !window.should_exit {
         window.handle_events(|_| ());
 
-        rendust::set_clear_color(Color::new(0.0, 0.0, 0.0, 1.0));
+        rendust::set_clear_color([0.0, 0.0, 0.0, 1.0]);
         rendust::clear();
 
         program.bind();

@@ -33,7 +33,7 @@ impl Vertex {
     pub fn textured(pos: [GLfloat; 3], tex: [GLfloat; 2]) -> Vertex {
         Vertex {
             position: pos,
-            color: Color::new(1.0, 1.0, 1.0, 1.0),
+            color: [1.0, 1.0, 1.0, 1.0],
             texcoords: tex
         }
     }
