@@ -15,27 +15,41 @@ lazy_static! {
 #[repr(C)]
 pub struct Vertex {
     pub position: [GLfloat; 3],
-    pub color: Color,
-    pub texcoords: [GLfloat; 2]
+    pub color: [GLfloat; 4],
+    pub texcoords: [GLfloat; 2],
+    pub normal: [GLfloat; 3]
 }
 
 impl Vertex {
-    /// Create a new colored vertex
-    pub fn new(pos: [GLfloat; 3], c: Color) -> Vertex {
+    /// Create a new vertex
+    /// Default color: white
+    /// Default texcoods: (0, 0)
+    /// Default normal: (0, 0, 0)
+    pub fn new(px: f32, py: f32, pz: f32) -> Vertex {
         Vertex {
-            position: pos,
-            color: c,
-            texcoords: [0.0, 0.0]
+            position: [px, py, pz],
+            color: [1.0, 1.0, 1.0, 1.0],
+            texcoords: [0.0, 0.0],
+            normal: [0.0, 0.0, 0.0]
         }
     }
 
-    /// Create a new textured vertex
-    pub fn textured(pos: [GLfloat; 3], tex: [GLfloat; 2]) -> Vertex {
-        Vertex {
-            position: pos,
-            color: [1.0, 1.0, 1.0, 1.0],
-            texcoords: tex
-        }
+    /// Add a color to a vertex
+    pub fn color(mut self, r: f32, g: f32, b: f32, a: f32) -> Vertex {
+        self.color = [r, g, b, a];
+        self
+    }
+
+    /// Add texture coordinates to a vertex
+    pub fn texcoords(mut self, tx: f32, ty: f32) -> Vertex {
+        self.texcoords = [tx, ty];
+        self
+    }
+
+    /// Add a normal vector to a vertex
+    pub fn normal(mut self, nx: f32, ny: f32, nz: f32) -> Vertex {
+        self.normal = [nx, ny, nz];
+        self
     }
 }
 

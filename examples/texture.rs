@@ -13,9 +13,9 @@ fn main() {
     let texture = Texture::new(image.w as u32, image.h as u32, image.buf.as_ref());
 
     let triangle = Mesh::new(PrimitiveType::Triangles, &[
-        Vertex::textured([-1.0, -1.0, 0.0], [0.0, 0.0]),
-        Vertex::textured([ 0.0,  1.0, 0.0], [0.5, 1.0]),
-        Vertex::textured([ 1.0, -1.0, 0.0], [1.0, 0.0]),
+        Vertex::new(-1.0, -1.0, 0.0).texcoords(0.0, 0.0),
+        Vertex::new( 0.0,  1.0, 0.0).texcoords(0.5, 1.0),
+        Vertex::new( 1.0, -1.0, 0.0).texcoords(1.0, 0.0),
     ], None);
 
     while !window.should_exit {
