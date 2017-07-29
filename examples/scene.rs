@@ -3,7 +3,7 @@ extern crate rendust;
 use rendust::math;
 use rendust::window::Window;
 use rendust::shaders::Program;
-use rendust::mesh::{Vertex, PrimitiveType, Mesh};
+use rendust::mesh::{Vertex, Texture, PrimitiveType, Mesh};
 use rendust::camera::Camera;
 
 fn main() {
@@ -15,7 +15,9 @@ fn main() {
     program.set_uniform_matrix("projection", projection.as_ref());
 
     let mut camera = Camera::new();
+    camera.position.x = 1.0;
     camera.position.y = 1.0;
+    camera.position.z = 3.0;
 
     let floor = Mesh::new(PrimitiveType::Quads, &[
         Vertex::new([-25.0, 0.0,  25.0], [0.4, 0.4, 0.4, 1.0]),
@@ -23,6 +25,27 @@ fn main() {
         Vertex::new([ 25.0, 0.0, -25.0], [0.4, 0.4, 0.4, 1.0]),
         Vertex::new([ 25.0, 0.0,  25.0], [0.4, 0.4, 0.4, 1.0]),
     ], None);
+
+    let cube = Mesh::new(PrimitiveType::Quads, &[
+        Vertex::new([-0.5, -0.5, 0.5], [1.0, 1.0, 1.0, 1.0]),
+        Vertex::new([-0.5,  0.5, 0.5], [1.0, 1.0, 1.0, 1.0]),
+        Vertex::new([ 0.5,  0.5, 0.5], [1.0, 1.0, 1.0, 1.0]),
+        Vertex::new([ 0.5, -0.5, 0.5], [1.0, 1.0, 1.0, 1.0]),
+
+        Vertex::new([-0.5, -0.5, -0.5], [1.0, 1.0, 1.0, 1.0]),
+        Vertex::new([-0.5,  0.5, -0.5], [1.0, 1.0, 1.0, 1.0]),
+        Vertex::new([ 0.5,  0.5, -0.5], [1.0, 1.0, 1.0, 1.0]),
+        Vertex::new([ 0.5, -0.5, -0.5], [1.0, 1.0, 1.0, 1.0]),
+    ], Some(&[
+        0, 1, 2, 3,
+        4, 5, 6, 7,
+
+        0, 1, 5, 4,
+        3, 2, 6, 7,
+
+        0, 4, 7, 3,
+        1, 5, 6, 2
+    ]));
 
     while !window.should_exit {
         window.handle_events(|_| ());
@@ -34,6 +57,7 @@ fn main() {
         program.set_uniform_matrix("view", camera.view_matrix().as_ref());
 
         floor.render();
+        cube.render();
 
         window.swap_buffers();
     }

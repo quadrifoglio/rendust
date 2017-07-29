@@ -15,6 +15,12 @@ pub type Vec3 = cgmath::Vector3<f32>;
 /// 4x4 square matrix
 pub type Mat4 = cgmath::Matrix4<f32>;
 
+/// Degrees & Radians angles
+pub use cgmath::Deg;
+pub use cgmath::Rad;
+
+pub use cgmath::SquareMatrix;
+
 /// Crate a perspective projection matrix
 /// FoV angle needs to be specified in degrees
 pub fn perspective(fovy: f32, aspect: f32, near: f32, far: f32) -> Mat4 {

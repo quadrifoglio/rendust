@@ -122,11 +122,24 @@ pub enum PrimitiveType {
     Quads
 }
 
+impl PrimitiveType {
+    // Get the corresponding GL constant
+    fn to_gl_const(&self) -> GLuint {
+        match *self {
+            PrimitiveType::Points => gl::POINTS,
+            PrimitiveType::Lines => gl::LINES,
+            PrimitiveType::Triangles => gl::TRIANGLES,
+            PrimitiveType::Quads => gl::QUADS
+        }
+    }
+}
+
 /// Represents a renderable 3D object
 pub struct Mesh {
     primitive: PrimitiveType,
-    vertex_count: i32,
-    vbo: GLuint
+    count: i32,
+    vbo: GLuint,
+    ibo: Option<GLuint>
 }
 
 impl Mesh {
@@ -150,10 +163,39 @@ impl Mesh {
             // Unbind VBO
             gl::BindBuffer(gl::ARRAY_BUFFER, 0);
 
+            // Optional IBO
+            let mut ibo: Option<GLuint> = None;
+            let mut count = vertices.len() as i32;
+
+            // If the caller specified indicies
+            if let Some(indicies) = indicies {
+                // Create a new IBO
+                let mut ibo_id: GLuint = 0;
+
+                gl::GenBuffers(1, (&mut ibo_id) as *mut GLuint);
+                gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ibo_id);
+
+                // Upload indicies to the graphics card
+                gl::BufferData(
+                    gl::ELEMENT_ARRAY_BUFFER,
+                    (std::mem::size_of::<u32>() * indicies.len()) as GLsizeiptr,
+                    indicies.as_ptr() as *const c_void,
+                    gl::STATIC_DRAW
+                );
+
+                // Unbind the IBO
+                gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, 0);
+
+                // Specify the IBO and use the correct element count
+                ibo = Some(ibo_id);
+                count = indicies.len() as i32;
+            }
+
             Mesh{
                 primitive: p,
+                count: count,
                 vbo: vbo,
-                vertex_count: vertices.len() as i32
+                ibo: ibo
             }
         }
     }
@@ -161,6 +203,7 @@ impl Mesh {
     /// Render the mesh to the screen
     pub fn render(&self) {
         unsafe {
+            gl::Enable(gl::DEPTH_TEST);
             // Bind the VBO
             gl::BindBuffer(gl::ARRAY_BUFFER, self.vbo);
 
@@ -205,12 +248,15 @@ impl Mesh {
                 (std::mem::size_of::<f32>() * (3 + 4)) as *const c_void
             );
 
-            // Render
-            match self.primitive {
-                PrimitiveType::Points => gl::DrawArrays(gl::POINTS, 0, self.vertex_count),
-                PrimitiveType::Lines => gl::DrawArrays(gl::LINES, 0, self.vertex_count),
-                PrimitiveType::Triangles => gl::DrawArrays(gl::TRIANGLES, 0, self.vertex_count),
-                PrimitiveType::Quads => gl::DrawArrays(gl::QUADS, 0, self.vertex_count),
+            // If indicies are being used
+            if let Some(ibo) = self.ibo {
+                gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ibo);
+                gl::DrawElements(self.primitive.to_gl_const(), self.count, gl::UNSIGNED_INT, 0 as *const c_void);
+                gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, 0);
+            }
+            // Otherwise just render the vertices
+            else {
+                gl::DrawArrays(self.primitive.to_gl_const(), 0, self.count);
             }
 
             // Disable the attributes
