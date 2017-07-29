@@ -149,12 +149,6 @@ impl Program {
         Program::new(vert, frag)
     }
 
-    /// Set a basic ambient lighting for the shader program
-    pub fn set_ambient_lighting(&self, color: [f32; 4], strength: f32) {
-        self.set_uniform_vector("ambient_light_color", 4, &color);
-        self.set_uniform_float("ambient_light_strength", strength);
-    }
-
     /// Set the value of the uniform matrix defined by the specified
     /// name.
     pub fn set_uniform_matrix(&self, name: &str, matrix: &[f32; 16]) {

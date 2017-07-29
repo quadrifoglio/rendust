@@ -56,3 +56,6 @@ pub mod math;
 
 // Camera
 pub mod camera;
+
+// Lighting
+pub mod lighting;
