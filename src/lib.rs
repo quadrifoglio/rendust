@@ -39,7 +39,7 @@ pub fn clear() {
 
     // Bind a default blank texture, in case no other
     // texture is being use
-    mesh::BlankTexture.bind();
+    mesh::BLANK_TEXTURE.bind();
 }
 
 // Windowing subsystem

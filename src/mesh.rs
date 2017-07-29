@@ -6,7 +6,7 @@ use gl::types::*;
 
 // Define a globally available default blank texture
 lazy_static! {
-    pub static ref BlankTexture: Texture = Texture::blank();
+    pub static ref BLANK_TEXTURE: Texture = Texture::blank();
 }
 
 /// Represents a 3D vertex
@@ -121,7 +121,7 @@ impl Texture {
     /// Unbind the texture
     /// This actually binds a default blank texture
     pub fn unbind(&self) {
-        BlankTexture.bind();
+        BLANK_TEXTURE.bind();
     }
 }
 
